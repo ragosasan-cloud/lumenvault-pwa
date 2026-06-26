@@ -453,14 +453,7 @@
     <p class="desc">Procesar un chat de WhatsApp y rutearlo al proyecto correcto.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-wa">
-        <span class="chip" onclick="selectChip(this,'chips-wa')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-wa')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-wa')">aquamar-ppp</span>
-        <span class="chip" onclick="selectChip(this,'chips-wa')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-wa')">venta-polvo-cobre</span>
-        <span class="chip" onclick="selectChip(this,'chips-wa')">polvo-cobre-capital</span>
-      </div>
+      <div class="project-chips" id="chips-wa"></div></div>
     </div>
     <div class="field">
       <label>Contacto / nombre del chat</label>
@@ -491,14 +484,7 @@
     <p class="desc">Escanear archivos raw/ sin procesar y promover los aprobados a wiki/.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-ingest">
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">aquamar-ppp</span>
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">vault-architect</span>
-        <span class="chip" onclick="selectChip(this,'chips-ingest')">vault-builds</span>
-      </div>
+      <div class="project-chips" id="chips-ingest"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('ingest')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-ingest">✅ Payload copiado — abre Claude y pega</div>
@@ -515,12 +501,7 @@
     <p class="desc">Generar o actualizar un NDA. Claude leerá people-registry.md para los firmantes.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-nda">
-        <span class="chip selected" onclick="selectChip(this,'chips-nda')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-nda')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-nda')">emilio-jose-japan</span>
-        <span class="chip" onclick="selectChip(this,'chips-nda')">emilio-jaime-india</span>
-      </div>
+      <div class="project-chips" id="chips-nda"></div></div>
     </div>
     <div class="field">
       <label>Acción</label>
@@ -553,12 +534,7 @@
     <p class="desc">Comparar dos versiones de un documento y generar el análisis de cambios.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-gap">
-        <span class="chip" onclick="selectChip(this,'chips-gap')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-gap')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-gap')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-gap')">aquamar-ppp</span>
-      </div>
+      <div class="project-chips" id="chips-gap"></div></div>
     </div>
     <div class="field">
       <label>Versión anterior</label>
@@ -583,14 +559,7 @@
     <p class="desc">Captura un pensamiento, decisión o dato en menos de 10 segundos.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-note">
-        <span class="chip" onclick="selectChip(this,'chips-note')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-note')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-note')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-note')">aquamar-ppp</span>
-        <span class="chip" onclick="selectChip(this,'chips-note')">vault-architect</span>
-        <span class="chip" onclick="selectChip(this,'chips-note')">General</span>
-      </div>
+      <div class="project-chips" id="chips-note"></div></div>
     </div>
     <div class="field">
       <label>Nota</label>
@@ -614,14 +583,7 @@
     <p class="desc">Activa /t para ver el estado actual, blockers, y última actividad.</p>
     <div class="field">
       <label>Proyecto (o dejar en blanco para todos)</label>
-      <div class="project-chips" id="chips-status">
-        <span class="chip" onclick="selectChip(this,'chips-status')">Todos</span>
-        <span class="chip" onclick="selectChip(this,'chips-status')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-status')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-status')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-status')">aquamar-ppp</span>
-        <span class="chip" onclick="selectChip(this,'chips-status')">vault-builds</span>
-      </div>
+      <div class="project-chips" id="chips-status" data-prefix="Todos"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('project-status')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-project-status">✅ Payload copiado — abre Claude y pega</div>
@@ -642,12 +604,7 @@
     </div>
     <div class="field">
       <label>Proyecto destino</label>
-      <div class="project-chips" id="chips-yt">
-        <span class="chip" onclick="selectChip(this,'chips-yt')">autopilot-fx</span>
-        <span class="chip" onclick="selectChip(this,'chips-yt')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-yt')">vault-architect</span>
-        <span class="chip" onclick="selectChip(this,'chips-yt')">video-content-memory</span>
-      </div>
+      <div class="project-chips" id="chips-yt"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('youtube')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-youtube">✅ Payload copiado — abre Claude y pega</div>
@@ -664,12 +621,7 @@
     <p class="desc">Importar el output de una sesión de Gemini al vault.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-gemini">
-        <span class="chip" onclick="selectChip(this,'chips-gemini')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-gemini')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-gemini')">vault-architect</span>
-        <span class="chip" onclick="selectChip(this,'chips-gemini')">vault-builds</span>
-      </div>
+      <div class="project-chips" id="chips-gemini"></div></div>
     </div>
     <div class="field">
       <label>Tema de la sesión</label>
@@ -693,11 +645,7 @@
     <p class="desc">Brain dump en voz. Claude lo estructura, categoriza y extrae action items.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-voice">
-        <span class="chip" onclick="selectChip(this,'chips-voice')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-voice')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-voice')">General</span>
-      </div>
+      <div class="project-chips" id="chips-voice"></div></div>
     </div>
     <div class="field">
       <label>Tu mensaje (dicta aquí)</label>
@@ -732,11 +680,7 @@
     </div>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-delegate">
-        <span class="chip" onclick="selectChip(this,'chips-delegate')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-delegate')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-delegate')">General</span>
-      </div>
+      <div class="project-chips" id="chips-delegate"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('delegate')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-delegate">✅ Payload copiado — abre Claude y pega</div>
@@ -760,12 +704,7 @@
     </div>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-decision">
-        <span class="chip" onclick="selectChip(this,'chips-decision')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-decision')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-decision')">vault-builds</span>
-        <span class="chip" onclick="selectChip(this,'chips-decision')">General</span>
-      </div>
+      <div class="project-chips" id="chips-decision"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('decision')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-decision">✅ Payload copiado — abre Claude y pega</div>
@@ -791,12 +730,7 @@
     </div>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-report">
-        <span class="chip" onclick="selectChip(this,'chips-report')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-report')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-report')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-report')">aquamar-ppp</span>
-      </div>
+      <div class="project-chips" id="chips-report"></div></div>
     </div>
     <div class="field">
       <label>Instrucciones</label>
@@ -852,17 +786,7 @@
     <p class="desc">Context reset. Claude carga el heartbeat + últimos blockers del proyecto seleccionado.</p>
     <div class="field">
       <label>Proyecto</label>
-      <div class="project-chips" id="chips-switch">
-        <span class="chip" onclick="selectChip(this,'chips-switch')">Paraguay</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">mali-hong-kong</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">iridio-mty</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">aquamar-ppp</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">vault-builds</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">vault-architect</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">autopilot-fx</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">refineria-de-sal</span>
-        <span class="chip" onclick="selectChip(this,'chips-switch')">polvo-cobre-capital</span>
-      </div>
+      <div class="project-chips" id="chips-switch"></div></div>
     </div>
     <button class="send-btn" onclick="sendPayload('project-switch')">Generar payload → Copiar</button>
     <div class="copied-banner" id="banner-project-switch">✅ Payload copiado — abre Claude y pega</div>
@@ -914,9 +838,59 @@ document.querySelectorAll('.overlay').forEach(overlay => {
   });
 });
 
+// initAllChips called at end of script
+
+// ── Master project list (single source of truth) ──
+const PROJECTS = [
+  'Paraguay',
+  'mali-hong-kong',
+  'aquamar-ppp',
+  'autopilot-fx',
+  'emilio-jaime-india',
+  'emilio-jose-japan',
+  'fiat-to-usdt-btc',
+  'forex-strategy',
+  'iridio-mty',
+  'nancy-vale-boda',
+  'polvo-cobre-capital',
+  'proyecto-minerva',
+  'refineria-de-sal',
+  'teologia',
+  'vault-architect',
+  'vault-builds',
+  'venta-polvo-cobre',
+  'video-content-memory',
+  'Dioxido_Cloro_Fuentes_Primarias',
+  'Felix',
+  'General'
+];
+
+function initAllChips() {
+  document.querySelectorAll('.project-chips').forEach(container => {
+    const id = container.id;
+    const prefix = container.getAttribute('data-prefix');
+    container.innerHTML = '';
+    if (prefix) {
+      const span = document.createElement('span');
+      span.className = 'chip';
+      span.textContent = prefix;
+      span.onclick = function() { selectChip(this); };
+      container.appendChild(span);
+    }
+    PROJECTS.forEach(proj => {
+      const span = document.createElement('span');
+      span.className = 'chip';
+      span.textContent = proj;
+      span.onclick = function() { selectChip(this); };
+      container.appendChild(span);
+    });
+  });
+}
+
 // ── Chip selection ──
-function selectChip(el, groupId) {
-  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+function selectChip(el) {
+  const grp = el.closest('.project-chips');
+  grp.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
 }
 
@@ -1049,6 +1023,9 @@ async function sendPayload(name) {
 function openClaude() {
   window.open('https://claude.ai', '_blank');
 }
+
+// ── Initialize chip pickers ──
+initAllChips();
 </script>
 </body>
 </html>
