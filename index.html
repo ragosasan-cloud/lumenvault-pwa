@@ -18,6 +18,11 @@
       --border: #C8B89A;
       --tab-h: 68px;
       --radius: 14px;
+    --clr-import: #C85A32;
+    --clr-produce: #2D6A4F;
+    --clr-capture: #D99B26;
+    --clr-system: #5A3E65;
+    --clr-topdeck: #8C6914;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
     body {
@@ -115,7 +120,7 @@
     .overlay.open { display: flex; }
     .sheet {
       background: var(--bg);
-      width: 100%; border-radius: 20px 20px 0 0;
+      width: 100%; border-radius: 32px 32px 0 0;
       padding: 20px 20px 40px;
       max-height: 85vh; overflow-y: auto;
     }
@@ -149,6 +154,7 @@
     }
     .field input:focus, .field textarea:focus, .field select:focus {
       border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(140,105,20,0.14);
     }
     .field textarea { resize: none; min-height: 80px; }
     .mic-btn {
@@ -161,27 +167,61 @@
 
     /* ── PROJECT SELECTOR ── */
     .project-chips {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
+      display: grid;
+      grid-template-rows: repeat(2, auto);
+      grid-auto-flow: column;
+      gap: 10px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding: 4px 2px 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
     }
+    .project-chips::-webkit-scrollbar { display: none; }
     .chip {
-      padding: 8px 14px; border: 2px solid var(--border);
-      border-radius: 20px; font-size: 13px; font-weight: 600;
-      color: var(--mid); background: var(--white); cursor: pointer;
+      display: flex; align-items: center; gap: 9px;
+      background: var(--white);
+      border: 2px solid #E2DCD0;
+      border-radius: 16px;
+      padding: 7px 14px 7px 7px;
+      scroll-snap-align: start;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      white-space: nowrap;
     }
-    .chip.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-light); }
+    .chip-avatar {
+      display: flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      font-size: 10px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .chip-label { font-size: 13px; font-weight: 600; color: var(--mid); }
+    .chip.selected {
+      border-color: var(--gold);
+      background: var(--gold-light);
+      box-shadow: 0 3px 10px rgba(140,105,20,0.12);
+    }
+    .chip.selected .chip-label { color: var(--gold); }
 
     /* ── SEND BUTTON ── */
     .send-btn {
-      width: 100%; padding: 18px;
+      display: flex; justify-content: space-between; align-items: center;
+      width: 100%; height: 60px;
       background: var(--gold); color: var(--white);
-      border: none; border-radius: var(--radius);
+      border: none; border-radius: 18px;
+      padding: 0 8px 0 22px;
       font-size: 17px; font-weight: 700; font-family: inherit;
-      cursor: pointer; margin-top: 8px;
-      letter-spacing: 0.02em;
+      cursor: pointer; margin-top: 10px;
+      box-shadow: 0 4px 16px rgba(140,105,20,0.22);
+      transition: transform 0.1s ease, background 0.15s ease;
     }
-    .send-btn:active { background: #6B4F10; }
-    .send-btn.success {
-      background: #1A6B30;
+    .send-btn:active { transform: scale(0.98); background: #735610; }
+    .send-btn .send-icon-box {
+      display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px;
+      background: rgba(255,255,255,0.15);
+      border-radius: 12px; flex-shrink: 0;
     }
 
     /* ── COPIED BANNER ── */
@@ -263,7 +303,7 @@
     }
     #hb-overlay.open { display: flex; }
     #hb-panel {
-      background: var(--bg); border-radius: 20px 20px 0 0;
+      background: var(--bg); border-radius: 32px 32px 0 0;
       width: 100%; max-height: 88vh; overflow-y: auto;
       padding: 0 20px 40px;
     }
@@ -316,6 +356,13 @@
       text-align: center; font-size: 12px; color: var(--mid);
       margin-bottom: 16px;
     }
+
+    /* ── CATEGORY COLOR ACCENTS ON CARDS ── */
+    #panel-import .card  { border-left: 4px solid var(--clr-import); }
+    #panel-produce .card { border-left: 4px solid var(--clr-produce); }
+    #panel-capture .card { border-left: 4px solid var(--clr-capture); }
+    #panel-system .card  { border-left: 4px solid var(--clr-system); }
+    #panel-top .card.gold-card { border-left: 4px solid var(--clr-topdeck); }
   </style>
 </head>
 <body>
@@ -564,7 +611,7 @@
         <button class="mic-btn" onclick="startVoice('wa-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('whatsapp-extract')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('whatsapp-extract')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -579,7 +626,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-ingest"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('ingest')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('ingest')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -610,7 +657,7 @@
         <button class="mic-btn" onclick="startVoice('nda-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('nda')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('nda')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -633,7 +680,7 @@
       <label>Versión nueva</label>
       <input type="text" id="gap-v2" placeholder="ej. NDA_V9.docx"/>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('gap-analysis')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('gap-analysis')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -655,7 +702,7 @@
         <button class="mic-btn" onclick="startVoice('note-text')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('quick-note')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('quick-note')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -670,7 +717,7 @@
       <label>Proyecto (o dejar en blanco para todos)</label>
       <div class="project-chips" id="chips-status" data-prefix="Todos"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('project-status')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('project-status')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -689,7 +736,7 @@
       <label>Proyecto destino</label>
       <div class="project-chips" id="chips-yt"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('youtube')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('youtube')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -711,7 +758,7 @@
         <button class="mic-btn" onclick="startVoice('gemini-topic')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('gemini')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('gemini')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -733,7 +780,7 @@
         <button class="mic-btn" style="align-self:flex-start" onclick="startVoice('voice-text')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('voice-memo')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('voice-memo')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -759,7 +806,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-delegate"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('delegate')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('delegate')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -781,7 +828,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-decision"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('decision')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('decision')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -812,7 +859,7 @@
         <button class="mic-btn" onclick="startVoice('report-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('report')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('report')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -842,7 +889,7 @@
         <option>Ingreso</option>
       </select>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('invoice')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('invoice')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -857,7 +904,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-switch"></div></div>
     </div>
-    <button class="send-btn" onclick="sendToClaudeNow('project-switch')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('project-switch')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -868,7 +915,7 @@
     <button class="close-btn" onclick="closeSheet('boot')">✕</button>
     <h2>🚀 Boot LumenVault</h2>
     <p class="desc">Carga todo el contexto del vault en una sesión nueva con /boot.</p>
-    <button class="send-btn" onclick="sendToClaudeNow('boot')">Enviar a Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('boot')"><span>Enviar a Claude</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
   </div>
 </div>
 
@@ -930,24 +977,44 @@ const PROJECTS = [
   'General'
 ];
 
+const AVATAR_COLORS = [
+  '#C85A32','#2D6A4F','#D99B26','#5A3E65',
+  '#8C6914','#1A5276','#6E2F1A','#1E5631'
+];
+
+function projectInitials(name) {
+  const parts = name.replace(/_/g,' ').replace(/-/g,' ').split(' ').filter(Boolean);
+  if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
+  return name.substring(0,2).toUpperCase();
+}
+
+function makeChip(label, groupEl, colorIdx) {
+  const btn = document.createElement('button');
+  btn.className = 'chip';
+  const av = document.createElement('span');
+  av.className = 'chip-avatar';
+  av.style.background = AVATAR_COLORS[colorIdx % AVATAR_COLORS.length];
+  av.textContent = projectInitials(label);
+  const lbl = document.createElement('span');
+  lbl.className = 'chip-label';
+  lbl.textContent = label;
+  btn.appendChild(av);
+  btn.appendChild(lbl);
+  btn.onclick = function() { selectChip(this); };
+  return btn;
+}
+
 function initAllChips() {
   document.querySelectorAll('.project-chips').forEach(container => {
-    const id = container.id;
     const prefix = container.getAttribute('data-prefix');
     container.innerHTML = '';
+    let idx = 0;
     if (prefix) {
-      const span = document.createElement('span');
-      span.className = 'chip';
-      span.textContent = prefix;
-      span.onclick = function() { selectChip(this); };
-      container.appendChild(span);
+      const btn = makeChip(prefix, container, idx++);
+      container.appendChild(btn);
     }
-    PROJECTS.forEach(proj => {
-      const span = document.createElement('span');
-      span.className = 'chip';
-      span.textContent = proj;
-      span.onclick = function() { selectChip(this); };
-      container.appendChild(span);
+    PROJECTS.forEach((proj, i) => {
+      container.appendChild(makeChip(proj, container, i));
     });
   });
 }
@@ -1176,7 +1243,7 @@ initAllChips();
       <button class="hb-close" onclick="closeHeartbeat()">✕</button>
     </div>
     <div class="hb-last-sync" id="hb-last-sync">Presiona el botón — Claude revisa y actualiza todos los proyectos.</div>
-    <button class="hb-sync-btn" id="hb-run-btn" onclick="runHeartbeatUpdate()">🔄 Actualizar Heartbeats</button>
+    <button class="hb-sync-btn" id="hb-run-btn" onclick="runHeartbeatUpdate()"><span>🔄 Actualizar Heartbeats</span><div class="send-icon-box"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div></button>
     <div id="hb-list"></div>
   </div>
 </div>
