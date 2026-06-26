@@ -564,9 +564,7 @@
         <button class="mic-btn" onclick="startVoice('wa-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('whatsapp-extract')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-whatsapp-extract">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-whatsapp-extract" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('whatsapp-extract')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -581,9 +579,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-ingest"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('ingest')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-ingest">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-ingest" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('ingest')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -614,9 +610,7 @@
         <button class="mic-btn" onclick="startVoice('nda-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('nda')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-nda">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-nda" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('nda')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -639,9 +633,7 @@
       <label>Versión nueva</label>
       <input type="text" id="gap-v2" placeholder="ej. NDA_V9.docx"/>
     </div>
-    <button class="send-btn" onclick="sendPayload('gap-analysis')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-gap-analysis">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-gap-analysis" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('gap-analysis')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -663,9 +655,7 @@
         <button class="mic-btn" onclick="startVoice('note-text')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('quick-note')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-quick-note">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-quick-note" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('quick-note')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -680,9 +670,7 @@
       <label>Proyecto (o dejar en blanco para todos)</label>
       <div class="project-chips" id="chips-status" data-prefix="Todos"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('project-status')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-project-status">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-project-status" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('project-status')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -701,9 +689,7 @@
       <label>Proyecto destino</label>
       <div class="project-chips" id="chips-yt"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('youtube')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-youtube">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-youtube" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('youtube')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -725,9 +711,7 @@
         <button class="mic-btn" onclick="startVoice('gemini-topic')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('gemini')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-gemini">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-gemini" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('gemini')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -749,9 +733,7 @@
         <button class="mic-btn" style="align-self:flex-start" onclick="startVoice('voice-text')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('voice-memo')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-voice-memo">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-voice-memo" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('voice-memo')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -777,9 +759,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-delegate"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('delegate')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-delegate">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-delegate" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('delegate')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -801,9 +781,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-decision"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('decision')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-decision">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-decision" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('decision')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -834,9 +812,7 @@
         <button class="mic-btn" onclick="startVoice('report-notes')">🎙️</button>
       </div>
     </div>
-    <button class="send-btn" onclick="sendPayload('report')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-report">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-report" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('report')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -866,9 +842,7 @@
         <option>Ingreso</option>
       </select>
     </div>
-    <button class="send-btn" onclick="sendPayload('invoice')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-invoice">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-invoice" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('invoice')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -883,9 +857,7 @@
       <label>Proyecto</label>
       <div class="project-chips" id="chips-switch"></div></div>
     </div>
-    <button class="send-btn" onclick="sendPayload('project-switch')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-project-switch">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-project-switch" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('project-switch')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -896,9 +868,7 @@
     <button class="close-btn" onclick="closeSheet('boot')">✕</button>
     <h2>🚀 Boot LumenVault</h2>
     <p class="desc">Carga todo el contexto del vault en una sesión nueva con /boot.</p>
-    <button class="send-btn" onclick="sendPayload('boot')">Generar payload → Copiar</button>
-    <div class="copied-banner" id="banner-boot">✅ Payload copiado — abre Claude y pega</div>
-    <button class="open-claude-btn" id="open-boot" onclick="openClaude()">Abrir Claude →</button>
+    <button class="send-btn" onclick="sendToClaudeNow('boot')">Enviar a Claude →</button>
   </div>
 </div>
 
@@ -1117,6 +1087,13 @@ async function sendPayload(name) {
 
 function openClaude() {
   window.open('https://claude.ai', '_blank');
+}
+
+function sendToClaudeNow(name) {
+  const text = PAYLOADS[name] ? PAYLOADS[name]() : name;
+  const url = 'https://claude.ai/new?q=' + encodeURIComponent(text);
+  window.open(url, '_blank');
+  if (navigator.vibrate) navigator.vibrate(50);
 }
 
 // ── HEARTBEAT ENGINE ──
