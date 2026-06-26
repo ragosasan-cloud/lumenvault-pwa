@@ -1170,19 +1170,17 @@ function updateHeartbeatBadge() {
 }
 
 function runHeartbeatUpdate() {
-  const payload = `HEARTBEAT_UPDATE:\nRevisar y actualizar los archivos _heartbeat.md y wiki/ de todos los proyectos activos en LumenVault con la actividad reciente. Reportar cuáles se actualizaron y el estado actual de cada uno.`;
-  navigator.clipboard.writeText(payload).catch(() => {});
   const btn = document.getElementById('hb-run-btn');
-  btn.textContent = '✅ Listo — abre Claude y pega';
+  btn.textContent = '🚀 Abriendo Claude...';
   btn.style.background = 'var(--gold)';
   btn.style.color = 'white';
   setTimeout(() => {
+    closeHeartbeat();
     btn.textContent = '🔄 Actualizar Heartbeats';
     btn.style.background = '';
     btn.style.color = '';
-    closeHeartbeat();
-    window.open('https://claude.ai', '_blank');
-  }, 900);
+    window.open('https://claude.ai/new?q=HEARTBEAT_UPDATE%3A%0ARevisar%20y%20actualizar%20los%20archivos%20_heartbeat.md%20y%20wiki/%20de%20todos%20los%20proyectos%20activos%20en%20LumenVault%20con%20la%20actividad%20reciente.%20Reportar%20cu%C3%A1les%20se%20actualizaron%20y%20el%20estado%20actual%20de%20cada%20uno.', '_blank');
+  }, 400);
 }
 
 // ── HEARTBEAT_SYNC PAYLOAD BUILDER ──
