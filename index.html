@@ -225,6 +225,97 @@
       font-size: 11px; font-weight: 700; padding: 4px 10px;
       border-radius: 20px; border: 2px solid var(--border); color: var(--mid);
     }
+
+    /* ── HEARTBEAT HEADER ICON ── */
+    .hb-btn {
+      position: relative; background: none; border: none;
+      font-size: 22px; cursor: pointer; padding: 4px;
+      margin-left: 6px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hb-btn .hb-icon { display: inline-block; }
+    .hb-btn.beating .hb-icon {
+      animation: heartbeat 1.2s ease-in-out infinite;
+    }
+    @keyframes heartbeat {
+      0%   { transform: scale(1); }
+      14%  { transform: scale(1.25); }
+      28%  { transform: scale(1); }
+      42%  { transform: scale(1.18); }
+      70%  { transform: scale(1); }
+      100% { transform: scale(1); }
+    }
+    .hb-badge {
+      position: absolute; top: -2px; right: -4px;
+      background: #C0392B; color: white;
+      font-size: 10px; font-weight: 800;
+      min-width: 17px; height: 17px;
+      border-radius: 9px; padding: 0 4px;
+      display: flex; align-items: center; justify-content: center;
+      border: 2px solid var(--white);
+    }
+    .hb-badge.hidden { display: none; }
+
+    /* ── HEARTBEAT OVERLAY ── */
+    #hb-overlay {
+      display: none; position: fixed; inset: 0; z-index: 500;
+      background: rgba(26,23,20,0.6); align-items: flex-end;
+    }
+    #hb-overlay.open { display: flex; }
+    #hb-panel {
+      background: var(--bg); border-radius: 20px 20px 0 0;
+      width: 100%; max-height: 88vh; overflow-y: auto;
+      padding: 0 20px 40px;
+    }
+    .hb-handle {
+      width: 40px; height: 4px; background: var(--border);
+      border-radius: 2px; margin: 12px auto 20px;
+    }
+    .hb-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .hb-title { font-size: 20px; font-weight: 800; color: var(--dark); }
+    .hb-close {
+      font-size: 24px; color: var(--mid); background: none; border: none; cursor: pointer;
+    }
+    .hb-sync-btn {
+      width: 100%; padding: 14px;
+      background: var(--gold-light); color: var(--gold);
+      border: 2px solid var(--gold); border-radius: var(--radius);
+      font-size: 15px; font-weight: 700; font-family: inherit;
+      cursor: pointer; margin-bottom: 18px;
+    }
+    .hb-sync-btn:active { background: var(--gold); color: white; }
+    .hb-clear-btn {
+      width: 100%; padding: 12px;
+      background: none; color: var(--mid);
+      border: 2px solid var(--border); border-radius: var(--radius);
+      font-size: 14px; font-weight: 600; font-family: inherit;
+      cursor: pointer; margin-top: 12px;
+    }
+    .hb-row {
+      display: flex; align-items: flex-start; gap: 12px;
+      padding: 14px 16px; background: var(--white);
+      border: 2px solid var(--border); border-radius: 12px;
+      margin-bottom: 10px;
+    }
+    .hb-row.pending { border-color: #C0392B; background: #FEF9F9; }
+    .hb-row.ok { border-color: #1A6B30; background: #F0FAF3; }
+    .hb-dot { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .hb-info { flex: 1; min-width: 0; }
+    .hb-proj { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .hb-meta { font-size: 12px; color: var(--mid); margin-top: 3px; }
+    .hb-note { font-size: 12px; color: #C0392B; margin-top: 4px; font-weight: 600; }
+    .hb-row.ok .hb-note { color: #1A6B30; }
+    .hb-empty {
+      text-align: center; padding: 40px 20px;
+      color: var(--mid); font-size: 15px; line-height: 1.6;
+    }
+    .hb-last-sync {
+      text-align: center; font-size: 12px; color: var(--mid);
+      margin-bottom: 16px;
+    }
   </style>
 </head>
 <body>
@@ -233,6 +324,10 @@
   <div class="logo-mark">LV</div>
   <h1>LumenVault</h1>
   <span id="active-project">— todos los proyectos</span>
+  <button class="hb-btn" id="hb-btn" onclick="openHeartbeat()" title="Heartbeat">
+    <span class="hb-icon">🤍</span>
+    <span class="hb-badge hidden" id="hb-badge">0</span>
+  </button>
 </header>
 
 <main>
@@ -1024,8 +1119,108 @@ function openClaude() {
   window.open('https://claude.ai', '_blank');
 }
 
+// ── HEARTBEAT ENGINE ──
+let HB_STATE = { lastSync: null, projects: [] };
+
+function openHeartbeat() {
+  renderHeartbeatList();
+  document.getElementById('hb-overlay').classList.add('open');
+}
+function closeHeartbeat() {
+  document.getElementById('hb-overlay').classList.remove('open');
+}
+
+function renderHeartbeatList() {
+  const list = document.getElementById('hb-list');
+  const projects = HB_STATE.projects;
+  if (!projects.length) {
+    list.innerHTML = '<div class="hb-empty">❤️‍🩹 Nada pendiente.<br>Pega un sync payload de Claude para cargar el estado de tus proyectos.</div>';
+    return;
+  }
+  list.innerHTML = projects.map(p => {
+    const isPending = p.status === 'pending';
+    const dot = isPending ? '🔴' : '✅';
+    const noteHtml = p.note ? `<div class="hb-note">${p.note}</div>` : '';
+    return `<div class="hb-row ${p.status}">
+      <div class="hb-dot">${dot}</div>
+      <div class="hb-info">
+        <div class="hb-proj">${p.name}</div>
+        <div class="hb-meta">Último update: ${p.lastUpdated || '—'}</div>
+        ${noteHtml}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateHeartbeatBadge() {
+  const pending = HB_STATE.projects.filter(p => p.status === 'pending').length;
+  const badge = document.getElementById('hb-badge');
+  const btn = document.getElementById('hb-btn');
+  const icon = btn.querySelector('.hb-icon');
+  if (pending > 0) {
+    badge.textContent = pending;
+    badge.classList.remove('hidden');
+    icon.textContent = '❤️';
+    btn.classList.add('beating');
+  } else {
+    badge.classList.add('hidden');
+    icon.textContent = HB_STATE.projects.length ? '💚' : '🤍';
+    btn.classList.remove('beating');
+  }
+}
+
+async function pasteHeartbeatSync() {
+  let text = '';
+  try {
+    text = await navigator.clipboard.readText();
+  } catch(e) {
+    text = prompt('Pega el payload HEARTBEAT_SYNC de Claude aquí:') || '';
+  }
+  const match = text.match(/HEARTBEAT_SYNC[:\s]*(\{[\s\S]*\})/);
+  if (!match) {
+    alert('No encontré un payload HEARTBEAT_SYNC válido en el portapapeles.');
+    return;
+  }
+  try {
+    const data = JSON.parse(match[1]);
+    HB_STATE.lastSync = data.timestamp || new Date().toISOString().split('T')[0];
+    HB_STATE.projects = data.projects || [];
+    document.getElementById('hb-last-sync').textContent = 'Último sync: ' + HB_STATE.lastSync;
+    renderHeartbeatList();
+    updateHeartbeatBadge();
+  } catch(e) {
+    alert('Error al parsear el payload. Verifica el formato.');
+  }
+}
+
+function clearAllHeartbeats() {
+  HB_STATE.projects = HB_STATE.projects.map(p => ({...p, status: 'ok', note: 'Revisado por Rafael'}));
+  renderHeartbeatList();
+  updateHeartbeatBadge();
+}
+
+// ── HEARTBEAT_SYNC PAYLOAD BUILDER ──
+// Called from sendPayload when name === 'heartbeat-sync'
+// (generates clipboard text that Claude produces, not consumed here)
+
 // ── Initialize chip pickers ──
 initAllChips();
 </script>
+<!-- ═══ HEARTBEAT OVERLAY ═══ -->
+<div id="hb-overlay" onclick="if(event.target===this)closeHeartbeat()">
+  <div id="hb-panel">
+    <div class="hb-handle"></div>
+    <div class="hb-header">
+      <span class="hb-title">❤️ Heartbeats</span>
+      <button class="hb-close" onclick="closeHeartbeat()">✕</button>
+    </div>
+    <div class="hb-last-sync" id="hb-last-sync">Sin sincronizar — pega un payload de Claude para actualizar</div>
+    <button class="hb-sync-btn" onclick="pasteHeartbeatSync()">📋 Pegar sync de Claude</button>
+    <div id="hb-list"></div>
+    <button class="hb-clear-btn" onclick="clearAllHeartbeats()">Marcar todos como revisados</button>
+  </div>
+</div>
+
+
 </body>
 </html>
