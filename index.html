@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="LumenVault"/>
+  <title>LumenVault</title>
+  <style>
+    :root {
+      --gold: #8C6914;
+      --gold-light: #F3EDD9;
+      --dark: #1A1714;
+      --mid: #5A4E3A;
+      --bg: #FDFAF5;
+      --white: #FFFFFF;
+      --border: #C8B89A;
+      --tab-h: 68px;
+      --radius: 14px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      font-family: -apple-system, "Helvetica Neue", sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      padding: 14px 20px 10px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .logo-mark {
+      width: 32px; height: 32px; background: var(--gold);
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+      color: white; font-weight: 800; font-size: 16px; letter-spacing: -1px;
+    }
+    header h1 { font-size: 18px; font-weight: 700; color: var(--dark); }
+    header span { font-size: 13px; color: var(--mid); margin-left: auto; }
+
+    /* ── SCROLL AREA ── */
+    main {
+      padding-top: 70px;
+      padding-bottom: calc(var(--tab-h) + 20px);
+      min-height: 100vh;
+    }
+
+    /* ── TAB PANELS ── */
+    .panel { display: none; padding: 20px 16px; }
+    .panel.active { display: block; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+      color: var(--mid); text-transform: uppercase;
+      margin-bottom: 14px; padding-left: 4px;
+    }
+
+    /* ── CARDS GRID ── */
+    .cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 28px;
+    }
+    .card {
+      background: var(--white);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 14px;
+      display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      min-height: 90px;
+    }
+    .card:active { border-color: var(--gold); background: var(--gold-light); }
+    .card .icon { font-size: 26px; line-height: 1; }
+    .card .label { font-size: 14px; font-weight: 600; color: var(--dark); line-height: 1.3; }
+    .card .sub { font-size: 12px; color: var(--mid); margin-top: 2px; }
+    .card.gold-card { border-color: var(--gold); background: var(--gold-light); }
+    .card.gold-card .label { color: var(--gold); }
+
+    /* ── BOTTOM TAB BAR ── */
+    nav {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 100;
+      height: var(--tab-h);
+      background: var(--white);
+      border-top: 2px solid var(--border);
+      display: flex;
+    }
+    .tab {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 4px;
+      cursor: pointer; padding: 8px 4px;
+      color: var(--mid);
+      border-top: 3px solid transparent;
+      transition: color .15s, border-color .15s;
+    }
+    .tab.active { color: var(--gold); border-top-color: var(--gold); }
+    .tab .tab-icon { font-size: 22px; line-height: 1; }
+    .tab .tab-label { font-size: 10px; font-weight: 600; letter-spacing: 0.02em; }
+
+    /* ── MODAL / FORM OVERLAY ── */
+    .overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(26,23,20,.5);
+      align-items: flex-end;
+    }
+    .overlay.open { display: flex; }
+    .sheet {
+      background: var(--bg);
+      width: 100%; border-radius: 20px 20px 0 0;
+      padding: 20px 20px 40px;
+      max-height: 85vh; overflow-y: auto;
+    }
+    .sheet-handle {
+      width: 40px; height: 4px; background: var(--border);
+      border-radius: 2px; margin: 0 auto 18px;
+    }
+    .sheet h2 {
+      font-size: 18px; font-weight: 700; color: var(--dark);
+      margin-bottom: 6px;
+    }
+    .sheet .desc {
+      font-size: 13px; color: var(--mid); margin-bottom: 20px; line-height: 1.5;
+    }
+
+    /* ── FORM FIELDS ── */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block; font-size: 12px; font-weight: 700;
+      color: var(--mid); text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .field-row { display: flex; gap: 10px; align-items: stretch; }
+    .field input, .field textarea, .field select {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid var(--border); border-radius: 10px;
+      background: var(--white); color: var(--dark);
+      font-size: 16px; font-family: inherit;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    .field input:focus, .field textarea:focus, .field select:focus {
+      border-color: var(--gold);
+    }
+    .field textarea { resize: none; min-height: 80px; }
+    .mic-btn {
+      flex-shrink: 0; width: 50px; height: 50px;
+      background: var(--gold-light); border: 2px solid var(--border);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+      font-size: 22px; cursor: pointer;
+    }
+    .mic-btn:active { background: var(--gold); }
+
+    /* ── PROJECT SELECTOR ── */
+    .project-chips {
+      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px;
+    }
+    .chip {
+      padding: 8px 14px; border: 2px solid var(--border);
+      border-radius: 20px; font-size: 13px; font-weight: 600;
+      color: var(--mid); background: var(--white); cursor: pointer;
+    }
+    .chip.selected { border-color: var(--gold); color: var(--gold); background: var(--gold-light); }
+
+    /* ── SEND BUTTON ── */
+    .send-btn {
+      width: 100%; padding: 18px;
+      background: var(--gold); color: var(--white);
+      border: none; border-radius: var(--radius);
+      font-size: 17px; font-weight: 700; font-family: inherit;
+      cursor: pointer; margin-top: 8px;
+      letter-spacing: 0.02em;
+    }
+    .send-btn:active { background: #6B4F10; }
+    .send-btn.success {
+      background: #1A6B30;
+    }
+
+    /* ── COPIED BANNER ── */
+    .copied-banner {
+      display: none;
+      background: #1A6B30; color: white;
+      border-radius: 10px; padding: 14px 16px;
+      font-size: 15px; font-weight: 600;
+      text-align: center; margin-top: 14px;
+    }
+    .copied-banner.show { display: block; }
+    .open-claude-btn {
+      display: none;
+      width: 100%; padding: 16px;
+      background: var(--dark); color: var(--white);
+      border: none; border-radius: var(--radius);
+      font-size: 16px; font-weight: 700; font-family: inherit;
+      cursor: pointer; margin-top: 12px;
+    }
+    .open-claude-btn.show { display: block; }
+
+    /* ── CLOSE BTN ── */
+    .close-btn {
+      float: right; font-size: 24px; color: var(--mid);
+      background: none; border: none; cursor: pointer;
+      margin-top: -4px;
+    }
+
+    /* ── VAULT STATUS ROWS ── */
+    .status-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; background: var(--white);
+      border: 2px solid var(--border); border-radius: 12px;
+      margin-bottom: 12px;
+    }
+    .status-dot { font-size: 18px; flex-shrink: 0; }
+    .status-info { flex: 1; }
+    .status-name { font-size: 15px; font-weight: 700; color: var(--dark); }
+    .status-detail { font-size: 12px; color: var(--mid); margin-top: 2px; }
+    .status-badge {
+      font-size: 11px; font-weight: 700; padding: 4px 10px;
+      border-radius: 20px; border: 2px solid var(--border); color: var(--mid);
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">LV</div>
+  <h1>LumenVault</h1>
+  <span id="active-project">— todos los proyectos</span>
+</header>
+
+<main>
+
+  <!-- ════ TOP DECK ════ -->
+  <div class="panel active" id="panel-top">
+    <p class="section-label">⭐ Accesos rápidos</p>
+    <div class="cards">
+      <div class="card gold-card" onclick="openSheet('whatsapp-extract')">
+        <span class="icon">💬</span>
+        <span class="label">WhatsApp Extract</span>
+        <span class="sub">Procesar chat</span>
+      </div>
+      <div class="card" onclick="openSheet('project-status')">
+        <span class="icon">📊</span>
+        <span class="label">Estado del Proyecto</span>
+        <span class="sub">/t shortcut</span>
+      </div>
+      <div class="card" onclick="openSheet('ingest')">
+        <span class="icon">📥</span>
+        <span class="label">Ingest</span>
+        <span class="sub">Procesar raw/</span>
+      </div>
+      <div class="card" onclick="openSheet('nda')">
+        <span class="icon">✍️</span>
+        <span class="label">NDA / SignWell</span>
+        <span class="sub">Generar doc</span>
+      </div>
+      <div class="card" onclick="openSheet('gap-analysis')">
+        <span class="icon">🔍</span>
+        <span class="label">Gap Analysis</span>
+        <span class="sub">Comparar versiones</span>
+      </div>
+      <div class="card" onclick="openSheet('quick-note')">
+        <span class="icon">⚡</span>
+        <span class="label">Nota Rápida</span>
+        <span class="sub">Captura instantánea</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ IMPORT ════ -->
+  <div class="panel" id="panel-import">
+    <p class="section-label">📥 Importar contenido</p>
+    <div class="cards">
+      <div class="card" onclick="openSheet('whatsapp-extract')">
+        <span class="icon">💬</span>
+        <span class="label">WhatsApp Export</span>
+        <span class="sub">Procesar chat</span>
+      </div>
+      <div class="card" onclick="openSheet('youtube')">
+        <span class="icon">▶️</span>
+        <span class="label">YouTube Transcript</span>
+        <span class="sub">Extraer transcripción</span>
+      </div>
+      <div class="card" onclick="openSheet('gemini')">
+        <span class="icon">✨</span>
+        <span class="label">Gemini Export</span>
+        <span class="sub">Importar sesión</span>
+      </div>
+      <div class="card" onclick="openSheet('voice-memo')">
+        <span class="icon">🎙️</span>
+        <span class="label">Voice Memo</span>
+        <span class="sub">Dictar ideas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ PRODUCE ════ -->
+  <div class="panel" id="panel-produce">
+    <p class="section-label">📄 Producir documentos</p>
+    <div class="cards">
+      <div class="card" onclick="openSheet('nda')">
+        <span class="icon">📋</span>
+        <span class="label">NDA / Contrato</span>
+        <span class="sub">Doc legal</span>
+      </div>
+      <div class="card" onclick="openSheet('gap-analysis')">
+        <span class="icon">🔍</span>
+        <span class="label">Gap Analysis</span>
+        <span class="sub">Comparar docs</span>
+      </div>
+      <div class="card" onclick="openSheet('report')">
+        <span class="icon">📊</span>
+        <span class="label">Reporte / Memo</span>
+        <span class="sub">Generar informe</span>
+      </div>
+      <div class="card" onclick="openSheet('invoice')">
+        <span class="icon">💵</span>
+        <span class="label">Factura / Gasto</span>
+        <span class="sub">Registro financiero</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CAPTURE ════ -->
+  <div class="panel" id="panel-capture">
+    <p class="section-label">📝 Capturar</p>
+    <div class="cards">
+      <div class="card" onclick="openSheet('quick-note')">
+        <span class="icon">⚡</span>
+        <span class="label">Nota Rápida</span>
+        <span class="sub">Pensamiento / idea</span>
+      </div>
+      <div class="card" onclick="openSheet('decision')">
+        <span class="icon">✅</span>
+        <span class="label">Decisión</span>
+        <span class="sub">Log de decisión</span>
+      </div>
+      <div class="card" onclick="openSheet('delegate')">
+        <span class="icon">👤</span>
+        <span class="label">Delegar</span>
+        <span class="sub">Briefing de tarea</span>
+      </div>
+      <div class="card" onclick="openSheet('voice-memo')">
+        <span class="icon">🎙️</span>
+        <span class="label">Voice Memo</span>
+        <span class="sub">Brain dump</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ SYSTEM ════ -->
+  <div class="panel" id="panel-system">
+    <p class="section-label">⚙️ Sistema</p>
+    <div class="cards">
+      <div class="card" onclick="openSheet('project-switch')">
+        <span class="icon">🔀</span>
+        <span class="label">Cambiar Proyecto</span>
+        <span class="sub">Context reset</span>
+      </div>
+      <div class="card" onclick="openSheet('project-status')">
+        <span class="icon">📊</span>
+        <span class="label">Vault Health</span>
+        <span class="sub">Estado general</span>
+      </div>
+      <div class="card" onclick="openSheet('boot')">
+        <span class="icon">🚀</span>
+        <span class="label">Boot LumenVault</span>
+        <span class="sub">/boot</span>
+      </div>
+      <div class="card" onclick="openSheet('ingest')">
+        <span class="icon">📥</span>
+        <span class="label">Ingest</span>
+        <span class="sub">Procesar raw/</span>
+      </div>
+    </div>
+
+    <p class="section-label" style="margin-top:8px">Estado del vault</p>
+    <div class="status-row">
+      <span class="status-dot">🟡</span>
+      <div class="status-info">
+        <div class="status-name">mali-hong-kong</div>
+        <div class="status-detail">Último: 2026-06-26 · Esperando respuesta Mario</div>
+      </div>
+      <span class="status-badge">OPEN</span>
+    </div>
+    <div class="status-row">
+      <span class="status-dot">🟡</span>
+      <div class="status-info">
+        <div class="status-name">Paraguay</div>
+        <div class="status-detail">Último: 2026-06-26 · NDA V9 listo</div>
+      </div>
+      <span class="status-badge">OPEN</span>
+    </div>
+    <div class="status-row">
+      <span class="status-dot">🟡</span>
+      <div class="status-info">
+        <div class="status-name">iridio-mty</div>
+        <div class="status-detail">Último: 2026-06-25 · Deal estancado</div>
+      </div>
+      <span class="status-badge">BLOCKED</span>
+    </div>
+    <div class="status-row">
+      <span class="status-dot">🔴</span>
+      <div class="status-info">
+        <div class="status-name">aquamar-ppp</div>
+        <div class="status-detail">Sin entrevista _START_HERE.md</div>
+      </div>
+      <span class="status-badge">INCOMPLETE</span>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════ BOTTOM TAB BAR ════ -->
+<nav>
+  <div class="tab active" onclick="switchTab('top')" id="tab-top">
+    <span class="tab-icon">⭐</span>
+    <span class="tab-label">Top Deck</span>
+  </div>
+  <div class="tab" onclick="switchTab('import')" id="tab-import">
+    <span class="tab-icon">📥</span>
+    <span class="tab-label">Import</span>
+  </div>
+  <div class="tab" onclick="switchTab('produce')" id="tab-produce">
+    <span class="tab-icon">📄</span>
+    <span class="tab-label">Produce</span>
+  </div>
+  <div class="tab" onclick="switchTab('capture')" id="tab-capture">
+    <span class="tab-icon">📝</span>
+    <span class="tab-label">Capture</span>
+  </div>
+  <div class="tab" onclick="switchTab('system')" id="tab-system">
+    <span class="tab-icon">⚙️</span>
+    <span class="tab-label">System</span>
+  </div>
+</nav>
+
+<!-- ════ SHEETS ════ -->
+
+<!-- WhatsApp Extract -->
+<div class="overlay" id="sheet-whatsapp-extract">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('whatsapp-extract')">✕</button>
+    <h2>💬 WhatsApp Extract</h2>
+    <p class="desc">Procesar un chat de WhatsApp y rutearlo al proyecto correcto.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-wa">
+        <span class="chip" onclick="selectChip(this,'chips-wa')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-wa')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-wa')">aquamar-ppp</span>
+        <span class="chip" onclick="selectChip(this,'chips-wa')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-wa')">venta-polvo-cobre</span>
+        <span class="chip" onclick="selectChip(this,'chips-wa')">polvo-cobre-capital</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Contacto / nombre del chat</label>
+      <div class="field-row">
+        <input type="text" id="wa-contact" placeholder="ej. Daciano, Mario, JRA Proyectos"/>
+        <button class="mic-btn" onclick="startVoice('wa-contact')">🎙️</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Notas adicionales (opcional)</label>
+      <div class="field-row">
+        <textarea id="wa-notes" placeholder="Contexto extra para Claude..."></textarea>
+        <button class="mic-btn" onclick="startVoice('wa-notes')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('whatsapp-extract')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-whatsapp-extract">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-whatsapp-extract" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Ingest -->
+<div class="overlay" id="sheet-ingest">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('ingest')">✕</button>
+    <h2>📥 Ingest</h2>
+    <p class="desc">Escanear archivos raw/ sin procesar y promover los aprobados a wiki/.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-ingest">
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">aquamar-ppp</span>
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">vault-architect</span>
+        <span class="chip" onclick="selectChip(this,'chips-ingest')">vault-builds</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('ingest')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-ingest">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-ingest" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- NDA -->
+<div class="overlay" id="sheet-nda">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('nda')">✕</button>
+    <h2>✍️ NDA / Documento Legal</h2>
+    <p class="desc">Generar o actualizar un NDA. Claude leerá people-registry.md para los firmantes.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-nda">
+        <span class="chip selected" onclick="selectChip(this,'chips-nda')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-nda')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-nda')">emilio-jose-japan</span>
+        <span class="chip" onclick="selectChip(this,'chips-nda')">emilio-jaime-india</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Acción</label>
+      <select id="nda-action">
+        <option>Generar nueva versión</option>
+        <option>Actualizar firmantes</option>
+        <option>Revisar cláusulas</option>
+        <option>Gap analysis entre versiones</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Instrucciones adicionales</label>
+      <div class="field-row">
+        <textarea id="nda-notes" placeholder="ej. agregar SEXTA PARTE, cambiar jurisdicción..."></textarea>
+        <button class="mic-btn" onclick="startVoice('nda-notes')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('nda')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-nda">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-nda" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Gap Analysis -->
+<div class="overlay" id="sheet-gap-analysis">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('gap-analysis')">✕</button>
+    <h2>🔍 Gap Analysis</h2>
+    <p class="desc">Comparar dos versiones de un documento y generar el análisis de cambios.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-gap">
+        <span class="chip" onclick="selectChip(this,'chips-gap')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-gap')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-gap')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-gap')">aquamar-ppp</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Versión anterior</label>
+      <input type="text" id="gap-v1" placeholder="ej. NDA_V8.docx"/>
+    </div>
+    <div class="field">
+      <label>Versión nueva</label>
+      <input type="text" id="gap-v2" placeholder="ej. NDA_V9.docx"/>
+    </div>
+    <button class="send-btn" onclick="sendPayload('gap-analysis')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-gap-analysis">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-gap-analysis" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Quick Note -->
+<div class="overlay" id="sheet-quick-note">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('quick-note')">✕</button>
+    <h2>⚡ Nota Rápida</h2>
+    <p class="desc">Captura un pensamiento, decisión o dato en menos de 10 segundos.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-note">
+        <span class="chip" onclick="selectChip(this,'chips-note')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-note')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-note')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-note')">aquamar-ppp</span>
+        <span class="chip" onclick="selectChip(this,'chips-note')">vault-architect</span>
+        <span class="chip" onclick="selectChip(this,'chips-note')">General</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Nota</label>
+      <div class="field-row">
+        <textarea id="note-text" placeholder="Escribe o dicta tu nota..." style="min-height:120px"></textarea>
+        <button class="mic-btn" onclick="startVoice('note-text')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('quick-note')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-quick-note">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-quick-note" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Project Status -->
+<div class="overlay" id="sheet-project-status">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('project-status')">✕</button>
+    <h2>📊 Estado del Proyecto</h2>
+    <p class="desc">Activa /t para ver el estado actual, blockers, y última actividad.</p>
+    <div class="field">
+      <label>Proyecto (o dejar en blanco para todos)</label>
+      <div class="project-chips" id="chips-status">
+        <span class="chip" onclick="selectChip(this,'chips-status')">Todos</span>
+        <span class="chip" onclick="selectChip(this,'chips-status')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-status')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-status')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-status')">aquamar-ppp</span>
+        <span class="chip" onclick="selectChip(this,'chips-status')">vault-builds</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('project-status')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-project-status">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-project-status" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- YouTube -->
+<div class="overlay" id="sheet-youtube">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('youtube')">✕</button>
+    <h2>▶️ YouTube Transcript</h2>
+    <p class="desc">Extraer y archivar la transcripción de un video de YouTube.</p>
+    <div class="field">
+      <label>URL del video</label>
+      <input type="url" id="yt-url" placeholder="https://youtube.com/watch?v=..."/>
+    </div>
+    <div class="field">
+      <label>Proyecto destino</label>
+      <div class="project-chips" id="chips-yt">
+        <span class="chip" onclick="selectChip(this,'chips-yt')">autopilot-fx</span>
+        <span class="chip" onclick="selectChip(this,'chips-yt')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-yt')">vault-architect</span>
+        <span class="chip" onclick="selectChip(this,'chips-yt')">video-content-memory</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('youtube')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-youtube">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-youtube" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Gemini -->
+<div class="overlay" id="sheet-gemini">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('gemini')">✕</button>
+    <h2>✨ Gemini Export</h2>
+    <p class="desc">Importar el output de una sesión de Gemini al vault.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-gemini">
+        <span class="chip" onclick="selectChip(this,'chips-gemini')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-gemini')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-gemini')">vault-architect</span>
+        <span class="chip" onclick="selectChip(this,'chips-gemini')">vault-builds</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tema de la sesión</label>
+      <div class="field-row">
+        <input type="text" id="gemini-topic" placeholder="ej. UX design launcher, routing arquitectura"/>
+        <button class="mic-btn" onclick="startVoice('gemini-topic')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('gemini')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-gemini">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-gemini" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Voice Memo -->
+<div class="overlay" id="sheet-voice-memo">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('voice-memo')">✕</button>
+    <h2>🎙️ Voice Memo</h2>
+    <p class="desc">Brain dump en voz. Claude lo estructura, categoriza y extrae action items.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-voice">
+        <span class="chip" onclick="selectChip(this,'chips-voice')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-voice')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-voice')">General</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tu mensaje (dicta aquí)</label>
+      <div class="field-row">
+        <textarea id="voice-text" placeholder="Toca el micrófono y habla..." style="min-height:140px"></textarea>
+        <button class="mic-btn" style="align-self:flex-start" onclick="startVoice('voice-text')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('voice-memo')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-voice-memo">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-voice-memo" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Delegate -->
+<div class="overlay" id="sheet-delegate">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('delegate')">✕</button>
+    <h2>👤 Delegar</h2>
+    <p class="desc">Claude genera un briefing estructurado listo para enviar por Slack o email.</p>
+    <div class="field">
+      <label>Tarea</label>
+      <div class="field-row">
+        <input type="text" id="delegate-task" placeholder="ej. Revisar el NDA V9 antes del viernes"/>
+        <button class="mic-btn" onclick="startVoice('delegate-task')">🎙️</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Para quién</label>
+      <input type="text" id="delegate-to" placeholder="ej. Armando, Mario, equipo"/>
+    </div>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-delegate">
+        <span class="chip" onclick="selectChip(this,'chips-delegate')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-delegate')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-delegate')">General</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('delegate')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-delegate">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-delegate" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Decision -->
+<div class="overlay" id="sheet-decision">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('decision')">✕</button>
+    <h2>✅ Registrar Decisión</h2>
+    <p class="desc">Log una decisión importante antes de que se pierda.</p>
+    <div class="field">
+      <label>Decisión</label>
+      <div class="field-row">
+        <textarea id="decision-text" placeholder="ej. Acordamos usar Vercel para el launcher..."></textarea>
+        <button class="mic-btn" onclick="startVoice('decision-text')">🎙️</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-decision">
+        <span class="chip" onclick="selectChip(this,'chips-decision')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-decision')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-decision')">vault-builds</span>
+        <span class="chip" onclick="selectChip(this,'chips-decision')">General</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('decision')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-decision">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-decision" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Report -->
+<div class="overlay" id="sheet-report">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('report')">✕</button>
+    <h2>📊 Reporte / Memo</h2>
+    <p class="desc">Generar un informe, memo o resumen ejecutivo.</p>
+    <div class="field">
+      <label>Tipo</label>
+      <select id="report-type">
+        <option>Resumen ejecutivo</option>
+        <option>Memo interno</option>
+        <option>Reporte de estado</option>
+        <option>Análisis de situación</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-report">
+        <span class="chip" onclick="selectChip(this,'chips-report')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-report')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-report')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-report')">aquamar-ppp</span>
+      </div>
+    </div>
+    <div class="field">
+      <label>Instrucciones</label>
+      <div class="field-row">
+        <textarea id="report-notes" placeholder="Contexto o instrucciones específicas..."></textarea>
+        <button class="mic-btn" onclick="startVoice('report-notes')">🎙️</button>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('report')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-report">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-report" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Invoice -->
+<div class="overlay" id="sheet-invoice">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('invoice')">✕</button>
+    <h2>💵 Factura / Gasto</h2>
+    <p class="desc">Registrar un gasto o generar una factura.</p>
+    <div class="field">
+      <label>Monto (USD)</label>
+      <input type="number" id="invoice-amount" placeholder="0.00"/>
+    </div>
+    <div class="field">
+      <label>Proyecto / Concepto</label>
+      <div class="field-row">
+        <input type="text" id="invoice-concept" placeholder="ej. Vercel pro plan, Notarial fees"/>
+        <button class="mic-btn" onclick="startVoice('invoice-concept')">🎙️</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Tipo</label>
+      <select id="invoice-type">
+        <option>Gasto</option>
+        <option>Factura a emitir</option>
+        <option>Ingreso</option>
+      </select>
+    </div>
+    <button class="send-btn" onclick="sendPayload('invoice')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-invoice">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-invoice" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Project Switch -->
+<div class="overlay" id="sheet-project-switch">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('project-switch')">✕</button>
+    <h2>🔀 Cambiar Proyecto</h2>
+    <p class="desc">Context reset. Claude carga el heartbeat + últimos blockers del proyecto seleccionado.</p>
+    <div class="field">
+      <label>Proyecto</label>
+      <div class="project-chips" id="chips-switch">
+        <span class="chip" onclick="selectChip(this,'chips-switch')">Paraguay</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">mali-hong-kong</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">iridio-mty</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">aquamar-ppp</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">vault-builds</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">vault-architect</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">autopilot-fx</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">refineria-de-sal</span>
+        <span class="chip" onclick="selectChip(this,'chips-switch')">polvo-cobre-capital</span>
+      </div>
+    </div>
+    <button class="send-btn" onclick="sendPayload('project-switch')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-project-switch">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-project-switch" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<!-- Boot -->
+<div class="overlay" id="sheet-boot">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <button class="close-btn" onclick="closeSheet('boot')">✕</button>
+    <h2>🚀 Boot LumenVault</h2>
+    <p class="desc">Carga todo el contexto del vault en una sesión nueva con /boot.</p>
+    <button class="send-btn" onclick="sendPayload('boot')">Generar payload → Copiar</button>
+    <div class="copied-banner" id="banner-boot">✅ Payload copiado — abre Claude y pega</div>
+    <button class="open-claude-btn" id="open-boot" onclick="openClaude()">Abrir Claude →</button>
+  </div>
+</div>
+
+<script>
+// ── Tab switching ──
+function switchTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + name).classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── Sheet open/close ──
+function openSheet(name) {
+  document.getElementById('sheet-' + name).classList.add('open');
+}
+function closeSheet(name) {
+  document.getElementById('sheet-' + name).classList.remove('open');
+  // reset banner
+  const b = document.getElementById('banner-' + name);
+  const o = document.getElementById('open-' + name);
+  if (b) b.classList.remove('show');
+  if (o) o.classList.remove('show');
+}
+
+// Close sheet on overlay tap (outside sheet)
+document.querySelectorAll('.overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target === this) {
+      this.classList.remove('open');
+    }
+  });
+});
+
+// ── Chip selection ──
+function selectChip(el, groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ── Voice input ──
+function startVoice(fieldId) {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    alert('Voice input not supported in this browser. Use Safari on iOS 15+.');
+    return;
+  }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const rec = new SR();
+  rec.lang = 'es-MX';
+  rec.interimResults = false;
+  rec.onresult = function(e) {
+    const field = document.getElementById(fieldId);
+    field.value += (field.value ? ' ' : '') + e.results[0][0].transcript;
+  };
+  rec.start();
+}
+
+// ── Payload builder ──
+const PAYLOADS = {
+  'whatsapp-extract': () => {
+    const proj = selectedChip('chips-wa') || '(selecciona proyecto)';
+    const contact = val('wa-contact') || '(contacto)';
+    const notes = val('wa-notes');
+    return `WHATSAPP EXTRACT:\nProyecto: ${proj}\nContacto / Chat: ${contact}${notes ? '\nNotas: ' + notes : ''}`;
+  },
+  'ingest': () => {
+    const proj = selectedChip('chips-ingest') || '(selecciona proyecto)';
+    return `INGEST: ${proj}`;
+  },
+  'nda': () => {
+    const proj = selectedChip('chips-nda') || 'Paraguay';
+    const action = val('nda-action');
+    const notes = val('nda-notes');
+    return `Proyecto: ${proj}\nAcción NDA: ${action}${notes ? '\n' + notes : ''}\n\n(Leer people-registry.md antes de escribir cualquier bloque de firmantes.)`;
+  },
+  'gap-analysis': () => {
+    const proj = selectedChip('chips-gap') || '(proyecto)';
+    const v1 = val('gap-v1') || '(versión anterior)';
+    const v2 = val('gap-v2') || '(versión nueva)';
+    return `run a gap analysis on ${proj}\nDocumento anterior: ${v1}\nDocumento nuevo: ${v2}`;
+  },
+  'quick-note': () => {
+    const proj = selectedChip('chips-note') || 'General';
+    const note = val('note-text') || '(nota)';
+    return `LOG: [${proj}]\n${note}`;
+  },
+  'project-status': () => {
+    const proj = selectedChip('chips-status') || 'Todos';
+    return proj === 'Todos' ? '/t' : `${proj} /t`;
+  },
+  'youtube': () => {
+    const url = val('yt-url') || '(URL)';
+    const proj = selectedChip('chips-yt') || '(proyecto)';
+    return `TRANSCRIPT: ${url}\nProyecto destino: ${proj}`;
+  },
+  'gemini': () => {
+    const proj = selectedChip('chips-gemini') || '(proyecto)';
+    const topic = val('gemini-topic') || '(tema)';
+    return `GEMINI EXTRACT:\nProyecto: ${proj}\nTema: ${topic}`;
+  },
+  'voice-memo': () => {
+    const proj = selectedChip('chips-voice') || 'General';
+    const text = val('voice-text') || '(mensaje)';
+    return `LOG: [${proj}] Voice memo\n${text}`;
+  },
+  'delegate': () => {
+    const task = val('delegate-task') || '(tarea)';
+    const to = val('delegate-to') || '(persona)';
+    const proj = selectedChip('chips-delegate') || 'General';
+    return `Generar un briefing de delegación:\nTarea: ${task}\nPara: ${to}\nProyecto: ${proj}`;
+  },
+  'decision': () => {
+    const decision = val('decision-text') || '(decisión)';
+    const proj = selectedChip('chips-decision') || 'General';
+    return `LOG: [${proj}] Decisión\n${decision}`;
+  },
+  'report': () => {
+    const type = val('report-type');
+    const proj = selectedChip('chips-report') || '(proyecto)';
+    const notes = val('report-notes');
+    return `Generar ${type} para ${proj}${notes ? '\n' + notes : ''}`;
+  },
+  'invoice': () => {
+    const amount = val('invoice-amount') || '0';
+    const concept = val('invoice-concept') || '(concepto)';
+    const type = val('invoice-type');
+    return `Registrar ${type}:\nMonto: $${amount} USD\nConcepto: ${concept}`;
+  },
+  'project-switch': () => {
+    const proj = selectedChip('chips-switch') || '(proyecto)';
+    return `${proj} /t`;
+  },
+  'boot': () => '/boot'
+};
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+function selectedChip(groupId) {
+  const sel = document.querySelector('#' + groupId + ' .chip.selected');
+  return sel ? sel.textContent.trim() : null;
+}
+
+async function sendPayload(name) {
+  const builder = PAYLOADS[name];
+  if (!builder) return;
+  const text = builder();
+  try {
+    await navigator.clipboard.writeText(text);
+  } catch(e) {
+    // Fallback for iOS
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  const banner = document.getElementById('banner-' + name);
+  const openBtn = document.getElementById('open-' + name);
+  if (banner) banner.classList.add('show');
+  if (openBtn) openBtn.classList.add('show');
+  // Haptic
+  if (navigator.vibrate) navigator.vibrate(50);
+}
+
+function openClaude() {
+  window.open('https://claude.ai', '_blank');
+}
+</script>
+</body>
+</html>
