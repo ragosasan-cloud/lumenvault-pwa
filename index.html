@@ -1134,7 +1134,7 @@ function renderHeartbeatList() {
   const list = document.getElementById('hb-list');
   const projects = HB_STATE.projects;
   if (!projects.length) {
-    list.innerHTML = '<div class="hb-empty">❤️‍🩹 Nada pendiente.<br>Pega un sync payload de Claude para cargar el estado de tus proyectos.</div>';
+    list.innerHTML = '<div class="hb-empty">❤️ Todo en orden.<br>Presiona el botón para que Claude revise todos los proyectos.</div>';
     return;
   }
   list.innerHTML = projects.map(p => {
@@ -1169,34 +1169,20 @@ function updateHeartbeatBadge() {
   }
 }
 
-async function pasteHeartbeatSync() {
-  let text = '';
-  try {
-    text = await navigator.clipboard.readText();
-  } catch(e) {
-    text = prompt('Pega el payload HEARTBEAT_SYNC de Claude aquí:') || '';
-  }
-  const match = text.match(/HEARTBEAT_SYNC[:\s]*(\{[\s\S]*\})/);
-  if (!match) {
-    alert('No encontré un payload HEARTBEAT_SYNC válido en el portapapeles.');
-    return;
-  }
-  try {
-    const data = JSON.parse(match[1]);
-    HB_STATE.lastSync = data.timestamp || new Date().toISOString().split('T')[0];
-    HB_STATE.projects = data.projects || [];
-    document.getElementById('hb-last-sync').textContent = 'Último sync: ' + HB_STATE.lastSync;
-    renderHeartbeatList();
-    updateHeartbeatBadge();
-  } catch(e) {
-    alert('Error al parsear el payload. Verifica el formato.');
-  }
-}
-
-function clearAllHeartbeats() {
-  HB_STATE.projects = HB_STATE.projects.map(p => ({...p, status: 'ok', note: 'Revisado por Rafael'}));
-  renderHeartbeatList();
-  updateHeartbeatBadge();
+function runHeartbeatUpdate() {
+  const payload = `HEARTBEAT_UPDATE:\nRevisar y actualizar los archivos _heartbeat.md y wiki/ de todos los proyectos activos en LumenVault con la actividad reciente. Reportar cuáles se actualizaron y el estado actual de cada uno.`;
+  navigator.clipboard.writeText(payload).catch(() => {});
+  const btn = document.getElementById('hb-run-btn');
+  btn.textContent = '✅ Listo — abre Claude y pega';
+  btn.style.background = 'var(--gold)';
+  btn.style.color = 'white';
+  setTimeout(() => {
+    btn.textContent = '🔄 Actualizar Heartbeats';
+    btn.style.background = '';
+    btn.style.color = '';
+    closeHeartbeat();
+    window.open('https://claude.ai', '_blank');
+  }, 900);
 }
 
 // ── HEARTBEAT_SYNC PAYLOAD BUILDER ──
@@ -1214,10 +1200,9 @@ initAllChips();
       <span class="hb-title">❤️ Heartbeats</span>
       <button class="hb-close" onclick="closeHeartbeat()">✕</button>
     </div>
-    <div class="hb-last-sync" id="hb-last-sync">Sin sincronizar — pega un payload de Claude para actualizar</div>
-    <button class="hb-sync-btn" onclick="pasteHeartbeatSync()">📋 Pegar sync de Claude</button>
+    <div class="hb-last-sync" id="hb-last-sync">Presiona el botón — Claude revisa y actualiza todos los proyectos.</div>
+    <button class="hb-sync-btn" id="hb-run-btn" onclick="runHeartbeatUpdate()">🔄 Actualizar Heartbeats</button>
     <div id="hb-list"></div>
-    <button class="hb-clear-btn" onclick="clearAllHeartbeats()">Marcar todos como revisados</button>
   </div>
 </div>
 
